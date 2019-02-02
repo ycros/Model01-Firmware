@@ -69,6 +69,8 @@
 // Support for USB quirks, like changing the key state report protocol
 #include "Kaleidoscope-USB-Quirks.h"
 
+#include <Kaleidoscope-SpaceCadet.h>
+
 /** This 'enum' is a list of all the macros used by the Model 01's firmware
   * The names aren't particularly important. What is important is that each
   * is unique.
@@ -83,7 +85,8 @@
   */
 
 enum { MACRO_VERSION_INFO,
-       MACRO_ANY
+       MACRO_ANY,
+       MACRO_CYCLE_LAYERS
      };
 
 
@@ -136,7 +139,7 @@ enum { MACRO_VERSION_INFO,
   *
   */
 
-enum { PRIMARY, NUMPAD, FUNCTION }; // layers
+enum { LR_PRIMARY, LR_QWERTY, LR_GAME, LR_NUMPAD, LR_FUNCTION }; // layers
 
 
 /**
@@ -152,9 +155,9 @@ enum { PRIMARY, NUMPAD, FUNCTION }; // layers
   *
   */
 
-#define PRIMARY_KEYMAP_QWERTY
+//#define PRIMARY_KEYMAP_QWERTY
 // #define PRIMARY_KEYMAP_COLEMAK
-// #define PRIMARY_KEYMAP_DVORAK
+#define PRIMARY_KEYMAP_DVORAK
 // #define PRIMARY_KEYMAP_CUSTOM
 
 
@@ -184,24 +187,24 @@ KEYMAPS(
 
 #elif defined (PRIMARY_KEYMAP_DVORAK)
 
-  [PRIMARY] = KEYMAP_STACKED
+  [LR_PRIMARY] = KEYMAP_STACKED
   (___,          Key_1,         Key_2,     Key_3,      Key_4, Key_5, Key_LEDEffectNext,
    Key_Backtick, Key_Quote,     Key_Comma, Key_Period, Key_P, Key_Y, Key_Tab,
    Key_PageUp,   Key_A,         Key_O,     Key_E,      Key_U, Key_I,
    Key_PageDown, Key_Semicolon, Key_Q,     Key_J,      Key_K, Key_X, Key_Escape,
    Key_LeftControl, Key_Backspace, Key_LeftGui, Key_LeftShift,
-   ShiftToLayer(FUNCTION),
+   ShiftToLayer(LR_FUNCTION),
 
-   M(MACRO_ANY),   Key_6, Key_7, Key_8, Key_9, Key_0, LockLayer(NUMPAD),
-   Key_Enter,      Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
-                   Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
-   Key_RightAlt,   Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
+   M(MACRO_CYCLE_LAYERS), Key_6, Key_7, Key_8, Key_9, Key_0, LockLayer(LR_NUMPAD),
+   Key_Enter,         Key_F, Key_G, Key_C, Key_R, Key_L, Key_Slash,
+                      Key_D, Key_H, Key_T, Key_N, Key_S, Key_Minus,
+   Key_RightAlt,      Key_B, Key_M, Key_W, Key_V, Key_Z, Key_Equals,
    Key_RightShift, Key_LeftAlt, Key_Spacebar, Key_RightControl,
-   ShiftToLayer(FUNCTION)),
+   ShiftToLayer(LR_FUNCTION)),
 
 #elif defined (PRIMARY_KEYMAP_COLEMAK)
 
-  [PRIMARY] = KEYMAP_STACKED
+  [LR_PRIMARY] = KEYMAP_STACKED
   (___,          Key_1, Key_2, Key_3, Key_4, Key_5, Key_LEDEffectNext,
    Key_Backtick, Key_Q, Key_W, Key_F, Key_P, Key_G, Key_Tab,
    Key_PageUp,   Key_A, Key_R, Key_S, Key_T, Key_D,
@@ -218,7 +221,7 @@ KEYMAPS(
 
 #elif defined (PRIMARY_KEYMAP_CUSTOM)
   // Edit this keymap to make a custom layout
-  [PRIMARY] = KEYMAP_STACKED
+  [LR_PRIMARY] = KEYMAP_STACKED
   (___,          Key_1, Key_2, Key_3, Key_4, Key_5, Key_LEDEffectNext,
    Key_Backtick, Key_Q, Key_W, Key_E, Key_R, Key_T, Key_Tab,
    Key_PageUp,   Key_A, Key_S, Key_D, Key_F, Key_G,
@@ -239,9 +242,37 @@ KEYMAPS(
 
 #endif
 
+  [LR_QWERTY] = KEYMAP_STACKED
+  (___, ___, ___, ___, ___, ___, ___,
+   ___, Key_Q, Key_W, Key_E, Key_R, Key_T, ___,
+   ___, Key_A, Key_S, Key_D, Key_F, Key_G,
+   ___, Key_Z, Key_X, Key_C, Key_V, Key_B, ___,
+   ___, ___, ___, ___,
+   ShiftToLayer(LR_FUNCTION),
 
+   ___,  ___, ___, ___,     ___,         ___,         ___,
+   ___,              Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
+                     Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
+   ___,              Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
+   ___, ___, ___, ___,
+   ShiftToLayer(LR_FUNCTION)),
 
-  [NUMPAD] =  KEYMAP_STACKED
+  [LR_GAME] = KEYMAP_STACKED
+  (Key_Escape, ___,           ___,   ___,   ___,   ___,   Key_T,
+   ___,        Key_Tab,       Key_Q, Key_W, Key_E, Key_R, Key_G,
+   ___,        Key_M,         Key_A, Key_S, Key_D, Key_F,
+   ___,        Key_LeftShift, Key_Z, Key_X, Key_C, Key_V, Key_B, 
+   ___, Key_Spacebar, Key_LeftAlt, ___,
+   ShiftToLayer(LR_FUNCTION),
+
+   ___,  ___, ___, ___,     ___,         ___,         ___,
+   ___, Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Equals,
+        Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
+   ___, Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
+   ___, ___, ___, ___,
+   ShiftToLayer(LR_FUNCTION)),
+
+  [LR_NUMPAD] =  KEYMAP_STACKED
   (___, ___, ___, ___, ___, ___, ___,
    ___, ___, ___, ___, ___, ___, ___,
    ___, ___, ___, ___, ___, ___,
@@ -256,7 +287,7 @@ KEYMAPS(
    ___, ___, ___, ___,
    ___),
 
-  [FUNCTION] =  KEYMAP_STACKED
+  [LR_FUNCTION] =  KEYMAP_STACKED
   (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           Key_CapsLock,
    Key_Tab,  ___,              Key_mouseUp, ___,        Key_mouseBtnR, Key_mouseWarpEnd, Key_mouseWarpNE,
    Key_Home, Key_mouseL,       Key_mouseDn, Key_mouseR, Key_mouseBtnL, Key_mouseWarpNW,
@@ -269,7 +300,7 @@ KEYMAPS(
                                Key_LeftArrow,          Key_DownArrow,            Key_UpArrow,              Key_RightArrow,  ___,              ___,
    Key_PcApplication,          Consumer_Mute,          Consumer_VolumeDecrement, Consumer_VolumeIncrement, ___,             Key_Backslash,    Key_Pipe,
    ___, ___, Key_Enter, ___,
-   ___)
+   ___),
 ) // KEYMAPS(
 
 /* Re-enable astyle's indent enforcement */
@@ -308,6 +339,26 @@ static void anyKeyMacro(uint8_t keyState) {
 }
 
 
+static void cycleMainLayers(uint8_t keyState) {
+  if (keyToggledOn(keyState)) {
+    // Serial.print(Layer.getLayerState(), BIN);
+    // Serial.print("-");
+    if (Layer.isActive(LR_PRIMARY)) {
+      Layer.deactivate(LR_PRIMARY);
+      Layer.activate(LR_QWERTY);
+    } else if (Layer.isActive(LR_QWERTY)) {
+      Layer.deactivate(LR_QWERTY);
+      Layer.activate(LR_GAME);
+    } else if (Layer.isActive(LR_GAME)) {
+      Layer.deactivate(LR_GAME);
+      Layer.activate(LR_PRIMARY);
+    }
+    // Serial.print(Layer.getLayerState(), BIN);
+    // Serial.println("");
+  } 
+}
+
+
 /** macroAction dispatches keymap events that are tied to a macro
     to that macro. It takes two uint8_t parameters.
 
@@ -329,6 +380,10 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
   case MACRO_ANY:
     anyKeyMacro(keyState);
+    break;
+
+  case MACRO_CYCLE_LAYERS:
+    cycleMainLayers(keyState);
     break;
   }
   return MACRO_NONE;
@@ -443,28 +498,28 @@ KALEIDOSCOPE_INIT_PLUGINS(
 
   // The rainbow effect changes the color of all of the keyboard's keys at the same time
   // running through all the colors of the rainbow.
-  LEDRainbowEffect,
+  // LEDRainbowEffect,
 
   // The rainbow wave effect lights up your keyboard with all the colors of a rainbow
   // and slowly moves the rainbow across your keyboard
-  LEDRainbowWaveEffect,
+  // LEDRainbowWaveEffect,
 
   // The chase effect follows the adventure of a blue pixel which chases a red pixel across
   // your keyboard. Spoiler: the blue pixel never catches the red pixel
-  LEDChaseEffect,
+  // LEDChaseEffect,
 
   // These static effects turn your keyboard's LEDs a variety of colors
   solidRed, solidOrange, solidYellow, solidGreen, solidBlue, solidIndigo, solidViolet,
 
   // The breathe effect slowly pulses all of the LEDs on your keyboard
-  LEDBreatheEffect,
+  // LEDBreatheEffect,
 
   // The AlphaSquare effect prints each character you type, using your
   // keyboard's LEDs as a display
-  AlphaSquareEffect,
+  // AlphaSquareEffect,
 
   // The stalker effect lights up the keys you've pressed recently
-  StalkerEffect,
+  // StalkerEffect,
 
   // The numpad plugin is responsible for lighting up the 'numpad' mode
   // with a custom LED effect
@@ -485,6 +540,8 @@ KALEIDOSCOPE_INIT_PLUGINS(
   // same time.
   MagicCombo,
 
+  SpaceCadet,
+
   // The USBQuirks plugin lets you do some things with USB that we aren't
   // comfortable - or able - to do automatically, but can be useful
   // nevertheless. Such as toggling the key report protocol between Boot (used
@@ -502,20 +559,20 @@ void setup() {
 
   // While we hope to improve this in the future, the NumPad plugin
   // needs to be explicitly told which keymap layer is your numpad layer
-  NumPad.numPadLayer = NUMPAD;
+  NumPad.numPadLayer = LR_NUMPAD;
 
   // We configure the AlphaSquare effect to use RED letters
   AlphaSquare.color = CRGB(255, 0, 0);
 
   // We set the brightness of the rainbow effects to 150 (on a scale of 0-255)
   // This draws more than 500mA, but looks much nicer than a dimmer effect
-  LEDRainbowEffect.brightness(150);
-  LEDRainbowWaveEffect.brightness(150);
+  // LEDRainbowEffect.brightness(150);
+  // LEDRainbowWaveEffect.brightness(150);
 
   // The LED Stalker mode has a few effects. The one we like is called
   // 'BlazingTrail'. For details on other options, see
   // https://github.com/keyboardio/Kaleidoscope/blob/master/doc/plugin/LED-Stalker.md
-  StalkerEffect.variant = STALKER(BlazingTrail);
+  StalkerEffect.variant = STALKER(Haunt);
 
   // We want to make sure that the firmware starts with LED effects off
   // This avoids over-taxing devices that don't have a lot of power to share
@@ -527,6 +584,19 @@ void setup() {
   // one wants to use these layers, just set the default layer to one in EEPROM,
   // by using the `settings.defaultLayer` Focus command.
   EEPROMKeymap.setup(5, EEPROMKeymap.Mode::EXTEND);
+
+  static kaleidoscope::SpaceCadet::KeyBinding spacecadetmap[] = {
+    {Key_LeftShift, Key_LeftParen, 250}
+    , {Key_RightShift, Key_RightParen, 250}
+    , {Key_LeftGui, Key_LeftCurlyBracket, 250}
+    , {Key_RightAlt, Key_RightCurlyBracket, 250}
+    , {Key_LeftAlt, Key_RightCurlyBracket, 250}
+    , {Key_LeftControl, Key_LeftBracket, 250}
+    , {Key_RightControl, Key_RightBracket, 250}
+    , SPACECADET_MAP_END
+  };
+  //Set the map.
+  SpaceCadet.map = spacecadetmap;
 }
 
 /** loop is the second of the standard Arduino sketch functions.
